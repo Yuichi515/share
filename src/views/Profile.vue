@@ -23,21 +23,37 @@
 </template>
 
 <script>
-import SideNavi from '../components/SideNavi';
-import Message from '../components/Message';
-
+import SideNavi from "../components/SideNavi";
+import Message from "../components/Message";
+import axios from "axios";
 export default {
   data() {
     return {
       active: true,
-      name: "太郎",
-      profile: "私は太郎です"
+      name: this.$store.state.user.name,
+      profile: this.$store.state.user.profile,
     };
+  },
+  methods: {
+    edit() {
+      if (!this.active) {
+        axios
+          .put("herokuのURL/api/user", {
+            email: this.$store.state.user.email,
+            profile: this.profile,
+          })
+          .then((response) => {
+            this.$store.commit("changeUserData", this.profile);
+            console.log(response);
+          });
+      }
+      this.active = !this.active;
+    },
   },
   components: {
     SideNavi,
-    Message
-  }
+    Message,
+  },
 };
 </script>
 
@@ -83,5 +99,8 @@ button {
   border-radius: 25px;
   display: block;
   margin: 0 0 0 auto;
+}
+input {
+  color: black;
 }
 </style>
